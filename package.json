@@ -10,6 +10,7 @@
     "bundle:android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle"
   },
   "dependencies": {
+    "babel-plugin-root-import": "^6.1.0",
     "eslint": "^5.2.0",
     "eslint-config-itomych-react": "^1.0.13",
     "eslint-plugin-import": "^2.13.0",
