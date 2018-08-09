@@ -5,7 +5,7 @@ import { persistStore } from 'redux-persist';
 import { store, persistor } from './store/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-
+import InitialScreen from '~/screens';
 Text.defaultProps = { allowFontScaling: false };
 
 class App extends Component<{}> {
@@ -13,15 +13,7 @@ class App extends Component<{}> {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <View style={styles.container}>
-            <Text style={styles.welcome}>{store.getState().first.count}</Text>
-            <Text style={styles.instructions}>To get started, edit App.js</Text>
-            <Text style={styles.instructions}>Hi poc</Text>
-            <Button
-              title="Change store"
-              onPress={() => store.dispatch({type: 'START_SAGA'})}
-            />
-          </View>
+          <InitialScreen />
         </PersistGate>
       </Provider>
     );
