@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist'
 import { AsyncStorage } from 'react-native';
 import { middleware, composer, sagaMiddleware } from './middleware';
-import initialSaga from '../sagas';
+import initialSaga from '~/sagas';
 import rootReducer from './reducers';
 
 const persistConfig = {
@@ -20,7 +20,7 @@ const store = createStore(
     applyMiddleware(...middleware),
   )
 );
-sagaMiddleware(initialSaga);
+sagaMiddleware.run(initialSaga);
 
   declare var module: {
     hot: {
@@ -35,5 +35,4 @@ sagaMiddleware(initialSaga);
   }
 
 const persistor = persistStore(store);
-console.log('bla store cnfstr', store);
 export { store, persistor }
