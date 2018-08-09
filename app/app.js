@@ -6,7 +6,7 @@ import { store, persistor } from './store/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 
-// Text.defaultProps.allowFontScaling = false;
+Text.defaultProps = { allowFontScaling: false };
 
 class App extends Component<{}> {
   render() {
