@@ -12,18 +12,18 @@ class App extends Component<{}> {
   render() {
     return (
       <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <View style={styles.container}>
-          <Text style={styles.welcome}>Welcome to React Native!</Text>
-          <Text style={styles.instructions}>To get started, edit App.js</Text>
-          <Text style={styles.instructions}>Hi poc</Text>
-          <Button
-            title="Change store"
-            onPress={() => store.dispatch({type: 'START_SAGA'})}
-          />
-        </View>
-      </PersistGate>
-    </Provider>
+        <PersistGate loading={null} persistor={persistor}>
+          <View style={styles.container}>
+            <Text style={styles.welcome}>{store.getState().first.count}</Text>
+            <Text style={styles.instructions}>To get started, edit App.js</Text>
+            <Text style={styles.instructions}>Hi poc</Text>
+            <Button
+              title="Change store"
+              onPress={() => store.dispatch({type: 'START_SAGA'})}
+            />
+          </View>
+        </PersistGate>
+      </Provider>
     );
   }
 }
