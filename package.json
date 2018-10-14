@@ -7,7 +7,7 @@
     "test": "jest",
     "lint": "node_modules/.bin/eslint --quiet ./app",
     "bundle:ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
-    "bundle:android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle"
+    "bundle:android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle"
   },
   "dependencies": {
     "babel-plugin-root-import": "^6.1.0",
@@ -16,6 +16,8 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react-native": "^3.2.1",
+    "firebase": "^5.5.4",
+    "moment": "^2.22.2",
     "react": "16.4.1",
     "react-native": "0.56.0",
     "react-navigation": "^2.11.2",
