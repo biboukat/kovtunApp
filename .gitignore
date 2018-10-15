@@ -32,7 +32,8 @@ local.properties
 index.android.bundle
 index.android.bundle.meta
 
-android/app/src/main/assets
+android/app/src/main/assets/
+app-release.apk
 
 # node.js
 #

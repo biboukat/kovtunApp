@@ -6,21 +6,16 @@ import { store, persistor } from './store/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import InitialScreen from '~/screens';
-import * as firebase from 'firebase';
+import firebase from 'firebase';
+
+export { firebase };
+import { firebaseInit } from './firebaseStore';
 
 Text.defaultProps = { allowFontScaling: false };
 
-const config = {
-  apiKey: "AIzaSyD5crgaKzkZyORAal51F9p-MZnkJErSZAc",
-  authDomain: "kovtun-88fbe.firebaseapp.com",
-  databaseURL: "https://kovtun-88fbe.firebaseio.com",
-  projectId: "kovtun-88fbe",
-  storageBucket: "kovtun-88fbe.appspot.com",
-  messagingSenderId: "482556730535"
-};
-firebase.initializeApp(config);
+firebaseInit();
 
-class App extends Component<{}> {
+class App extends Component {
   render() {
     return (
       <Provider store={store}>

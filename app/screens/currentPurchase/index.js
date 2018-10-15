@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import Calculator from './calculator';
-import { savePurchase } from '../../firebaseStore';
+import { savePurchase } from '~/firebaseStore';
 
 class CurrentPurchase extends React.Component {
   static navigationOptions = ({ navigation }) => (
@@ -21,21 +21,38 @@ class CurrentPurchase extends React.Component {
     }
   )
 
-  state = {
-    total: '',
-    current: '',
-    currentOperation: '',
-    isNewNumber: false,
+  constructor (props) {
+    super(props);
+    this.state = {
+      total: '',
+      current: '',
+      currentOperation: '',
+      isNewNumber: false,
+      showSpinner: false,
+    };
+    this.reason = '';
   }
+
 
   componentDidMount() {
     this.props.navigation.setParams({ save: this.save });
   }
 
-  reason = ''
+  setSpinner = (val) => {
+    this.setState({
+      showSpinner: val,
+    });
+  }
+
   save = () => {
-    console.log('bla', savePurchase)
-    savePurchase(this.state.current, this.reason);
+    this.setSpinner(true);
+    savePurchase(this.state.current, this.reason).then((res) => {
+      this.setSpinner(false);
+      this.props.navigation.goBack();
+    }).catch((e) => {
+      this.setSpinner(false);
+      console.log('bla error', e);
+    });
   }
 
   clean = () => {
@@ -121,8 +138,9 @@ class CurrentPurchase extends React.Component {
             <Text style={styles.cashText}>Reason</Text>
             <TextInput
               style={styles.reason}
-              value={this.reason}
-              onChangeText={(text) => this.reason = text}
+              onChangeText={(text) => {
+                this.reason = text;
+              }}
               multiline
             />
           </View>
@@ -134,12 +152,26 @@ class CurrentPurchase extends React.Component {
             toEqual={this.toEqual}
           />
         </View>
+        {this.state.showSpinner && 
+        <View style={styles.spinner}>
+          <ActivityIndicator size="large" color="black" />
+        </View>}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  spinner: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   inputsContainer: {
     marginBottom: 10,
   },
@@ -158,7 +190,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   title: {
-    color: 'white', fontWeight: 'bold', fontSize: 19, paddingBottom: 10, textAlign: 'center'
+    color: 'white',
+    // fontWeight: 'bold',
+    fontSize: 19,
+    paddingBottom: 10,
+    textAlign: 'center'
   },
   cashText: {
     color: 'white', textAlign: 'right', paddingBottom: 5,

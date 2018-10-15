@@ -6,7 +6,6 @@ import Row3 from './row3';
 import Row4 from './row4';
 import Row5 from './row5';
 class Calculator extends React.PureComponent {
-
   render() {
     console.log('bla render calculator, it is bad');
     return (
@@ -55,7 +54,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   title: {
-    color: 'white', fontWeight: 'bold', fontSize: 19, paddingBottom: 10, textAlign: 'center'
+    color: 'white',
+    // fontWeight: 'bold',
+    fontSize: 19,
+    paddingBottom: 10,
+    textAlign: 'center'
   },
   cashText: {
     color: 'white', textAlign: 'right', paddingBottom: 5,
