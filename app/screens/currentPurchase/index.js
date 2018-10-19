@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Calculator from './calculator';
 import { savePurchase } from '~/firebaseStore';
 
@@ -12,11 +12,12 @@ class CurrentPurchase extends React.Component {
       },
       headerTintColor: '#fff',
       headerRight: (
-        <Button
+        <TouchableOpacity
+          style={styles.save}
           onPress={navigation.getParam('save')}
-          title="Save"
-          color="black"
-        />
+        >
+          <Text style={styles.saveBtnText}>Save</Text>
+        </TouchableOpacity>
       ),
     }
   )
@@ -198,6 +199,19 @@ const styles = StyleSheet.create({
   },
   cashText: {
     color: 'white', textAlign: 'right', paddingBottom: 5,
+  },
+  save: {
+    marginRight: 5,
+    padding: 8,
+    borderRadius: 10,
+    borderColor: 'white',
+    borderWidth: 1,
+  },
+  saveBtnText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    
   },
   cachContainer: {
     height: 31,
