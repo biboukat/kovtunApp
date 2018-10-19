@@ -1,9 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist'
 import { AsyncStorage } from 'react-native';
+import { offline } from '@redux-offline/redux-offline';
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
 import { middleware, composer, sagaMiddleware } from './middleware';
 import initialSaga from '~/sagas';
-import rootReducer from './reducers';
+import rootReducer from '~/reducers';
 
 const persistConfig = {
   key: 'root',
@@ -18,6 +20,7 @@ const store = createStore(
   initialState,
   composer(
     applyMiddleware(...middleware),
+    offline(offlineConfig),
   )
 );
 sagaMiddleware.run(initialSaga);

@@ -1,14 +1,20 @@
 /* @flow */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, AsyncStorage, Button } from 'react-native';
-import { persistStore } from 'redux-persist';
+import { StyleSheet, Text} from 'react-native';
 import { store, persistor } from './store/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import InitialScreen from '~/screens';
+import firebase from 'firebase';
+
+export { firebase };
+import { firebaseInit } from './firebaseStore';
+
 Text.defaultProps = { allowFontScaling: false };
 
-class App extends Component<{}> {
+firebaseInit();
+
+class App extends Component {
   render() {
     return (
       <Provider store={store}>

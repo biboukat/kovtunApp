@@ -1,11 +1,17 @@
 import { createStackNavigator } from 'react-navigation';
-import HomeScreen from './homeScreen';
-import DetailsScreen from './detailsScreen';
+import Home from './homeScreen';
+import Details from './detailsScreen';
+import CurrentPurchase from '~/screens/currentPurchase';
+import PurchaseHistory from '~/screens/purchaseHistory';
+import DisplaingHistory from '~/screens/purchaseHistory/displaingHistory';
 
 export default createStackNavigator(
   {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    Home,
+    Details,
+    CurrentPurchase,
+    PurchaseHistory,
+    DisplaingHistory,
   },
   {
     initialRouteName: 'Home',
