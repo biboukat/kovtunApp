@@ -6,8 +6,6 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { getPurchaseHistoryByDay } from '~/firebaseStore';
-import moment from 'moment';
 
 //components
 import Calendar from './calendar';
@@ -54,23 +52,6 @@ class PurchaseHistory extends React.Component {
         </ScrollView>
       </View>
     );
-  }
-}
-
-class ItemElement extends React.PureComponent {
-  render() {
-    const { index, item } = this.props;
-    return (
-      <View key={index} style={styles.itemContainer}>
-        <View style={styles.time}>
-          <Text style={[styles.text, styles.timeText]}>{item.time}</Text>
-        </View>
-        <View style={styles.description}>
-          <Text style={[styles.textPrice, styles.text]}>{`${item.price} UAH`}</Text>
-          <Text style={[styles.textReason, styles.text]}>{`${item.reason}`}</Text>
-        </View>
-      </View>
-    )
   }
 }
 

@@ -13,15 +13,27 @@ function firebaseInit () {
   firebase.initializeApp(config);
 }
 
-function savePurchase (price, reason) {
+function getPurchaseHistoryByDay (year, month, day) {
+  return firebase.database().ref(`users/alex/${year}/${month}/${day}`).once('value');
+}
+
+async function savePurchaseFirebase (price, reason) {
   const year = moment().format('YYYY');
   const month = moment().format('M');
   const day = moment().format('D');
   const time = moment().format('h:mm:ss a');
+  return firebase.database().ref(`users/alex/${year}/${month}/${day}/${time}`).set({
+    price,
+    reason,
+    time,
+  });
+}
 
-  // const ref = firebase.database().ref('users').
-  // orderByChild('email').
-  // equalTo('alex@kovtun.com')`
+function editPurchaseFirebase (price, reason, date, time) {
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('M');
+  const day = moment(date).format('D');
+
   return firebase.database().ref(`users/alex/${year}/${month}/${day}/${time}`).set({
     price,
     reason,
@@ -47,12 +59,4 @@ function getPurchaseHistoryByRange (datesArray) {
   }
 }
 
-function getPurchaseHistoryByDay (year, month, day) {
-  // const res = firebase.database().ref(`users/alex/${year}/${month}`).startAt(15).once('value');
-  // res.then((bla) => {
-  //   console.log('bla ', bla.val());
-  // });
-  return firebase.database().ref(`users/alex/${year}/${month}/${day}`).once('value');
-}
-
-export { savePurchase, firebaseInit, getPurchaseHistoryByDay, getPurchaseHistoryByRange };
+export { savePurchaseFirebase, firebaseInit, getPurchaseHistoryByDay, getPurchaseHistoryByRange, editPurchaseFirebase };

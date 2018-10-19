@@ -1,7 +1,13 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, Keyboard } from 'react-native';
+import moment from 'moment';
+
+//Store
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { savePurchase, editPurchase } from '~/actions/purchaseOperation';
+
 import Calculator from './calculator';
-import { savePurchase } from '~/firebaseStore';
 
 class CurrentPurchase extends React.Component {
   static navigationOptions = ({ navigation }) => (
@@ -24,64 +30,78 @@ class CurrentPurchase extends React.Component {
 
   constructor (props) {
     super(props);
+    const price = this.props.navigation.getParam('price', '');
+    const reason = this.props.navigation.getParam('reason', '');
+    const time = this.props.navigation.getParam('time', '');
+    const isEditing = this.props.navigation.getParam('edit', false);
+    const selectedDay = this.props.navigation.getParam('selectedDay', '');
     this.state = {
       total: '',
-      current: '',
+      price,
       currentOperation: '',
       isNewNumber: false,
-      showSpinner: false,
+      saving: false,
+      isEditing,
+      selectedDay,
+      time,
+      reason,
     };
-    this.reason = '';
   }
 
 
   componentDidMount() {
     this.props.navigation.setParams({ save: this.save });
   }
-
-  setSpinner = (val) => {
-    this.setState({
-      showSpinner: val,
-    });
+  
+  save = () => {
+    this.setState({ saving: true });
+    Keyboard.dismiss();
+    this.state.isEditing ? 
+      this.editPurchase() :
+      this.savePurchase();
   }
 
-  save = () => {
-    this.setSpinner(true);
-    savePurchase(this.state.current, this.reason).then((res) => {
-      this.setSpinner(false);
-      this.props.navigation.goBack();
-    }).catch((e) => {
-      this.setSpinner(false);
-      console.log('bla error', e);
-    });
+  savePurchase = () => {
+    const { price, isEditing, reason } = this.state;
+    this.props.save({ price, reason, isEditing }, this.goBack);
+  }
+  
+  editPurchase = () => {
+    const { price, isEditing, time, selectedDay, reason } = this.state;
+    const currentDate = moment(selectedDay.timestamp);
+    this.props.edit({ price, reason, currentDate, time, isEditing }, this.goBack);
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack();
   }
 
   clean = () => {
-    this.setState({ current: '', total: '' });
+    this.setState({ price: '', total: '' });
   }
 
   doOperation = () => {
-    const { currentOperation, total, current } = this.state;
+    const { currentOperation, total, price } = this.state;
     let totalNum;
     switch (currentOperation) {
       case '+':
-        totalNum= (+total + +current) + '';
+        totalNum= (+total + +price) + '';
         break;
       case '-':
-        totalNum= (+total - +current) + '';
+        totalNum= (+total - +price) + '';
         break;
       case '/':
-        totalNum= (+total / +current) + '';
+        totalNum= (+total / +price) + '';
         break;
       case '*':
-        totalNum= (+total * +current) + '';
+        totalNum= (+total * +price) + '';
         break;
     }
-    this.setState({ current: totalNum, total: totalNum });
+    this.setState({ price: totalNum, total: totalNum });
   }
 
   addOperation = (operation) => {
-    const { current, currentOperation } = this.state;
+    const { price, currentOperation } = this.state;
     if (currentOperation.length) {
       this.doOperation();
     } else {
@@ -100,28 +120,28 @@ class CurrentPurchase extends React.Component {
   }
 
   addNumber = (x) => {
-    const { current, isNewNumber } = this.state;
+    const { price, isNewNumber } = this.state;
     if (isNewNumber) {
       this.setState({
-        current: x,
+        price: x,
         isNewNumber: false,
       });
     } else {
       this.setState({
-        current: current + x,
+        price: price + x,
       });
     }
   }
 
   deleteSymbol = () => {
     this.setState({
-      current: this.state.current.slice(0, -1),
+      price: this.state.price.slice(0, -1),
     });
   }
 
   toBuffer = () => {
     this.setState({
-      total: this.state.current,
+      total: this.state.price,
     })
   }
 
@@ -132,16 +152,15 @@ class CurrentPurchase extends React.Component {
           <View style={styles.inputsContainer}>
             <Text style={styles.cashText}>Cach</Text>
             <View style={styles.cachContainer}>
-              <Text style={styles.cachSumm}>{this.state.current}</Text>
+              <Text style={styles.cachSumm}>{this.state.price}</Text>
             </View>
           </View>
           <View style={styles.inputsContainer}>
             <Text style={styles.cashText}>Reason</Text>
             <TextInput
               style={styles.reason}
-              onChangeText={(text) => {
-                this.reason = text;
-              }}
+              value={this.state.reason}
+              onChangeText={(text) => this.setState({ reason: text })}
               multiline
             />
           </View>
@@ -153,7 +172,7 @@ class CurrentPurchase extends React.Component {
             toEqual={this.toEqual}
           />
         </View>
-        {this.state.showSpinner && 
+        {this.state.saving && 
         <View style={styles.spinner}>
           <ActivityIndicator size="large" color="black" />
         </View>}
@@ -192,7 +211,6 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    // fontWeight: 'bold',
     fontSize: 19,
     paddingBottom: 10,
     textAlign: 'center'
@@ -222,4 +240,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CurrentPurchase;
+export default connect(
+  state => ({
+    saving: state.savedPurchase.saving,
+  }),
+  dispatch => ({
+    save: bindActionCreators( savePurchase, dispatch),
+    edit: bindActionCreators( editPurchase, dispatch),
+  }),
+)(CurrentPurchase);

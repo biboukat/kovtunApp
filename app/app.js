@@ -1,7 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, AsyncStorage, NativeModules } from 'react-native';
-import { persistStore } from 'redux-persist';
+import { StyleSheet, Text} from 'react-native';
 import { store, persistor } from './store/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';

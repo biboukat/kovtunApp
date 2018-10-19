@@ -7,6 +7,7 @@ import {
   FlatList,
   SectionList,
   LayoutAnimation,
+  TouchableOpacity,
 } from "react-native";
 import { getPurchaseHistoryByDay } from '~/firebaseStore';
 import moment from 'moment';
@@ -25,6 +26,7 @@ class DisplaingHistory extends React.Component {
     this.state = {
       list: [],
       showSpinner: true,
+      selectedDay: this.props.navigation.getParam('selectedDay'),
     }
   }
 
@@ -33,18 +35,15 @@ class DisplaingHistory extends React.Component {
   }
   
   getByDay = (date) => {
-    const month = moment(date.timestamp).format("MMMM");
-    const purchaseHistory = getPurchaseHistoryByDay(date.year, month, date.day);
+    const monthFullName = moment(date.timestamp).format('MMMM')
+    const purchaseHistory = getPurchaseHistoryByDay(date.year, date.month, date.day);
     purchaseHistory.then((snapshot) => {
-      // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-      
       const result = snapshot.val();
       const data =  result ? Object.values(result) : [];
       const totalPrice = data.reduce((a, b) => a + +b.price, 0);
-      const list = [{ title: `${date.day} ${month}`, totalPrice, data}];
+      const list = [{ title: `${date.day} ${monthFullName}`, totalPrice, data}];
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       this.setState({ list, showSpinner: false });
-      console.log('bla', list);
     }).catch((e) => {
       this.setState({ showSpinner: false });
       console.log('bla e', e);
@@ -57,8 +56,10 @@ class DisplaingHistory extends React.Component {
         <SectionList
           renderItem={({item, index, section}) => (
             <ItemElement
+              navigation={this.props.navigation}
               item={item}
               index={index}
+              selectedDay={this.state.selectedDay}
             />
           )}
           renderSectionHeader={({section: {title, totalPrice}}) => (
@@ -80,18 +81,33 @@ class DisplaingHistory extends React.Component {
 }
 
 class ItemElement extends React.PureComponent {
+  goToEdit = () => {
+    const { item: { price, reason, time }, selectedDay } = this.props;
+    this.props.navigation.navigate('CurrentPurchase', {
+      price,
+      reason,
+      time,
+      edit: true,
+      selectedDay,
+    })
+  }
+
   render() {
     const { index, item } = this.props;
     return (
-      <View key={index} style={styles.itemContainer}>
-        <View style={styles.time}>
-          <Text style={[styles.text, styles.timeText]}>{item.time}</Text>
+      <TouchableOpacity
+        onPress={this.goToEdit}
+      >
+        <View key={index} style={styles.itemContainer}>
+          <View style={styles.timePrice}>
+            <Text style={[styles.textPrice, styles.text]}>{`${item.price} UAH`}</Text>
+            <Text style={[styles.text, styles.timeText]}>{item.time}</Text>
+          </View>
+          <View style={styles.description}>
+            <Text style={[styles.textReason, styles.text]}>{`${item.reason}`}</Text>
+          </View>
         </View>
-        <View style={styles.description}>
-          <Text style={[styles.textPrice, styles.text]}>{`${item.price} UAH`}</Text>
-          <Text style={[styles.textReason, styles.text]}>{`${item.reason}`}</Text>
-        </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
@@ -99,7 +115,14 @@ class ItemElement extends React.PureComponent {
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#bfb8b8',
+    borderRadius: 4,
+    padding: 5,
+  },
+  timePrice: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   timeText: {
     textAlign: 'right',
@@ -107,6 +130,7 @@ const styles = StyleSheet.create({
   textReason: {
     fontSize: 17,
     marginLeft: 10,
+    flex: 1,
   },
   textPrice: {
     fontWeight: 'bold',
