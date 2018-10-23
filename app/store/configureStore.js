@@ -1,41 +1,41 @@
-import { createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist'
-import { AsyncStorage } from 'react-native';
-import { offline } from '@redux-offline/redux-offline';
+import { createStore, compose, combineReducers, applyMiddleware } from 'redux';
+import { createOffline } from '@redux-offline/redux-offline';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
-import { middleware, composer, sagaMiddleware } from './middleware';
+import * as reducers from '~/reducers';
 import initialSaga from '~/sagas';
-import rootReducer from '~/reducers';
+import createSagaMiddleware from 'redux-saga';
+import { createLogger } from 'redux-logger';
 
-const persistConfig = {
-  key: 'root',
-  storage: AsyncStorage,
-};
-const initialState = {};
+const logger = createLogger({});
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const sagaMiddleware = createSagaMiddleware();
+const rootReducer = combineReducers(reducers);
 
-const store = createStore(
-  persistedReducer,
-  initialState,
-  composer(
-    applyMiddleware(...middleware),
-    offline(offlineConfig),
-  )
-);
+let immutableStateInvariant;
+if (window.__DEV__) { // eslint-disable-line no-underscore-dangle
+  immutableStateInvariant = require('redux-immutable-state-invariant').default(); // eslint-disable-line import/no-extraneous-dependencies
+}
+
+const middlewareList = window.__DEV__ // eslint-disable-line no-underscore-dangle
+  ? [sagaMiddleware, immutableStateInvariant, logger]
+  : [sagaMiddleware];
+// const middlewareList = [
+//   /* other middleware here */
+//   sagaMiddleware
+// ];
+
+const {
+  middleware: offlineMiddleware,
+  enhanceReducer,
+  enhanceStore
+} = createOffline(offlineConfig);
+const middleware = applyMiddleware(...middlewareList, offlineMiddleware);
+
+const composer = window.__DEV__ // eslint-disable-line no-underscore-dangle
+  ? composeWithDevTools
+  : compose;
+
+const store = createStore(enhanceReducer(rootReducer), composer(enhanceStore, middleware));
 sagaMiddleware.run(initialSaga);
-
-  declare var module: {
-    hot: {
-      accept(callback: () => void): void,
-    },
-  };
-  if (module.hot) {
-    module.hot.accept(() => {
-      const nextRootReducer = rootReducer;
-      store.replaceReducer(nextRootReducer);
-    });
-  }
-
-const persistor = persistStore(store);
-export { store, persistor }
+export { store };

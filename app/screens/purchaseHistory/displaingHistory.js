@@ -64,7 +64,7 @@ class DisplaingHistory extends React.Component {
           )}
           renderSectionHeader={({section: {title, totalPrice}}) => (
             <View style={styles.titleContainer}>
-              <Text style={[styles.totalPrice, styles.title]}>{`${totalPrice} UAH`}</Text>
+              <Text style={[styles.totalPrice, styles.title]}>{`${(+totalPrice).toFixed(2)} UAH`}</Text>
               <Text style={styles.title}>{title}</Text>
             </View>
           )}
@@ -82,26 +82,26 @@ class DisplaingHistory extends React.Component {
 
 class ItemElement extends React.PureComponent {
   goToEdit = () => {
-    const { item: { price, reason, time }, selectedDay } = this.props;
+    const { item: { price, reason, time }} = this.props;
     this.props.navigation.navigate('CurrentPurchase', {
       price,
       reason,
       time,
       edit: true,
-      selectedDay,
     })
   }
 
   render() {
     const { index, item } = this.props;
+    const time = moment(item.time).format('h:mm:ss a');
     return (
       <TouchableOpacity
         onPress={this.goToEdit}
       >
         <View key={index} style={styles.itemContainer}>
           <View style={styles.timePrice}>
-            <Text style={[styles.textPrice, styles.text]}>{`${item.price} UAH`}</Text>
-            <Text style={[styles.text, styles.timeText]}>{item.time}</Text>
+            <Text style={[styles.textPrice, styles.text]}>{`${(+item.price).toFixed(2)} UAH`}</Text>
+            <Text style={[styles.text, styles.timeText]}>{time}</Text>
           </View>
           <View style={styles.description}>
             <Text style={[styles.textReason, styles.text]}>{`${item.reason}`}</Text>

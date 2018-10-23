@@ -1,7 +1,7 @@
 import * as types from '~/shared/actionTypes';
 function savedPurchase (state = {}, action) {
   switch (action.type) {
-  case types.SAVE_PURCHASE_NEW_START:
+  case types.SAVE_PURCHASE_START:
     return {
       currentPurchase: {
         price: action.price,

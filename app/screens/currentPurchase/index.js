@@ -5,7 +5,7 @@ import moment from 'moment';
 //Store
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { savePurchase, editPurchase } from '~/actions/purchaseOperation';
+import { saveOffLine } from '~/actions/purchaseOperation';
 
 import Calculator from './calculator';
 
@@ -34,7 +34,6 @@ class CurrentPurchase extends React.Component {
     const reason = this.props.navigation.getParam('reason', '');
     const time = this.props.navigation.getParam('time', '');
     const isEditing = this.props.navigation.getParam('edit', false);
-    const selectedDay = this.props.navigation.getParam('selectedDay', '');
     this.state = {
       total: '',
       price,
@@ -42,7 +41,6 @@ class CurrentPurchase extends React.Component {
       isNewNumber: false,
       saving: false,
       isEditing,
-      selectedDay,
       time,
       reason,
     };
@@ -62,18 +60,23 @@ class CurrentPurchase extends React.Component {
   }
 
   savePurchase = () => {
+    const date = moment();
     const { price, isEditing, reason } = this.state;
-    this.props.save({ price, reason, isEditing }, this.goBack);
+    this.props.saveOffLine({ price, reason, isEditing, date }, this.goBack());
   }
   
   editPurchase = () => {
-    const { price, isEditing, time, selectedDay, reason } = this.state;
-    const currentDate = moment(selectedDay.timestamp);
-    this.props.edit({ price, reason, currentDate, time, isEditing }, this.goBack);
+    const { price, isEditing, time, reason } = this.state;
+    const date = moment(time);
+    this.props.saveOffLine({ price, reason, date, isEditing }, this.goBack());
   }
 
   goBack = () => {
+    if(this.props.isOnline) {
+      return this.props.navigation.goBack;
+    }
     this.props.navigation.goBack();
+    return null;
   }
 
   clean = () => {
@@ -242,10 +245,9 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
-    saving: state.savedPurchase.saving,
+    isOnline: state.offline.online,
   }),
   dispatch => ({
-    save: bindActionCreators( savePurchase, dispatch),
-    edit: bindActionCreators( editPurchase, dispatch),
+    saveOffLine: bindActionCreators( saveOffLine, dispatch),
   }),
 )(CurrentPurchase);

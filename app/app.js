@@ -1,14 +1,14 @@
 /* @flow */
 import React, { Component } from 'react';
-import { StyleSheet, Text} from 'react-native';
-import { store, persistor } from './store/configureStore';
-import { PersistGate } from 'redux-persist/integration/react';
+import { Text } from 'react-native';
+import { store } from '~/store/configureStore';
 import { Provider } from 'react-redux';
-import InitialScreen from '~/screens';
+import createStackNavigator from '~/screens';
 import firebase from 'firebase';
+import { firebaseInit } from '~/firebaseStore';
+import { isLoggedIn } from '~/selectors/auth';
 
-export { firebase };
-import { firebaseInit } from './firebaseStore';
+const InitialScreen = createStackNavigator(isLoggedIn(store.getState()));
 
 Text.defaultProps = { allowFontScaling: false };
 
@@ -18,31 +18,11 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <InitialScreen />
-        </PersistGate>
+        <InitialScreen />
       </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-
+export { firebase };
 export default App;
