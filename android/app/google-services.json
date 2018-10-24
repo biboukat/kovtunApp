@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "482556730535",
+    "firebase_url": "https://kovtun-88fbe.firebaseio.com",
+    "project_id": "kovtun-88fbe",
+    "storage_bucket": "kovtun-88fbe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482556730535:android:8b33baa3d838732e",
+        "android_client_info": {
+          "package_name": "com.kovtun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482556730535-v8kjrambgd1u2soadm84jmomvqn7se0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMIH1HIIxhAAf9TSPnCtLYmJ9T2AckCLM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482556730535:android:8933877121ecd036",
+        "android_client_info": {
+          "package_name": "com.kovtunapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482556730535-v8kjrambgd1u2soadm84jmomvqn7se0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMIH1HIIxhAAf9TSPnCtLYmJ9T2AckCLM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
+import { googleLogin } from '~/firebaseStore/auth';
+
 class Auth extends React.Component {
   static navigationOptions = {
     // header: null,
@@ -8,19 +10,27 @@ class Auth extends React.Component {
       backgroundColor: '#72b1ab',
     },
   }
+
+  authByPhone = () => {
+  }
+
+  authByGoogle = () => {
+    googleLogin();
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Auth</Text>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => {}}
+            onPress={this.authByPhone}
           >
             <Text style={styles.buttonText}>Auth by phone</Text>
         </TouchableOpacity>
         <TouchableOpacity
             style={styles.button}
-            onPress={() => {}}
+            onPress={this.authByGoogle}
           >
           <Text style={styles.buttonText}>Auth by google</Text>
         </TouchableOpacity>
