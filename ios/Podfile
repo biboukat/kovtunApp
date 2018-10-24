@@ -1,0 +1,8 @@
+platform :ios, '10.0'
+use_frameworks!
+
+target 'kovtunApp' do
+  pod 'Firebase/Core', '~> 5.9.0'
+  pod 'Firebase/Database', '~> 5.9.0'
+  pod 'Firebase/Auth', '~> 5.9.0'
+end
